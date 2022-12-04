@@ -1,0 +1,98 @@
+menu = new ContextMenu();
+			//MenuItem file = new MenuItem("File");
+			void SaveSettings()
+            {
+				prefs.Write("distance", distance.ToString(), "common");
+				prefs.Write("diameter", diameter.ToString(), "common");
+				prefs.Write("offset", offset.ToString(), "common");
+            }
+			MenuItem windowStateItem = new MenuItem("Window State");
+			void UpdateWindowState(object s, FormWindowState state)
+			{
+				foreach (MenuItem i in windowStateItem.MenuItems) i.Checked = i == (MenuItem)s;
+				WindowState = state;
+				ComputeLightsCount();
+			}
+			windowStateItem.MenuItems.AddRange(new MenuItem[] {
+				new MenuItem("Maximized",(s,e) => { UpdateWindowState(s, FormWindowState.Maximized); }){ RadioCheck = true, Checked = true },
+				new MenuItem("Normal",   (s,e) => { UpdateWindowState(s, FormWindowState.Normal   ); }){ RadioCheck = true },
+				new MenuItem("Minimized",(s,e) => { UpdateWindowState(s, FormWindowState.Minimized); }){ RadioCheck = true },
+			});
+
+			MenuItem distanceItem = new MenuItem("Distance");
+			void UpdateDistance(object s, int d)
+			{
+				foreach (MenuItem i in distanceItem.MenuItems) i.Checked = i == (MenuItem)s;
+				distance = d;
+				ComputeLightsCount();
+				SaveSettings();
+			}
+			distanceItem.MenuItems.AddRange(new MenuItem[] {
+				new MenuItem("96",(s,e) => { UpdateDistance(s, 96); }){ RadioCheck = true, Tag = 96 },
+				new MenuItem("80",(s,e) => { UpdateDistance(s, 80); }){ RadioCheck = true, Tag = 80 },
+				new MenuItem("64",(s,e) => { UpdateDistance(s, 64); }){ RadioCheck = true, Tag = 64 },
+				new MenuItem("48",(s,e) => { UpdateDistance(s, 48); }){ RadioCheck = true, Tag = 48 },
+				new MenuItem("32",(s,e) => { UpdateDistance(s, 32); }){ RadioCheck = true, Tag = 32 },
+			});
+
+			MenuItem diameterItem = new MenuItem("Diameter");
+			void UpdateDiameter(object s, int d)
+			{
+				foreach (MenuItem i in diameterItem.MenuItems) i.Checked = i == (MenuItem)s;
+				diameter = d;
+				ComputeLightsCount();
+				SaveSettings();
+			}
+			diameterItem.MenuItems.AddRange(new MenuItem[] {
+				new MenuItem("16",(s,e) => { UpdateDiameter(s, 16); }){ RadioCheck = true, Tag = 16 },
+				new MenuItem("14",(s,e) => { UpdateDiameter(s, 14); }){ RadioCheck = true, Tag = 14 },
+				new MenuItem("12",(s,e) => { UpdateDiameter(s, 12); }){ RadioCheck = true, Tag = 12 },
+				new MenuItem("10",(s,e) => { UpdateDiameter(s, 10); }){ RadioCheck = true, Tag = 10 },
+				new MenuItem("8", (s,e) => { UpdateDiameter(s,  8); }){ RadioCheck = true, Tag = 08 },
+			});
+
+			MenuItem offsetItem = new MenuItem("Offset");
+			void UpdateOffset(object s, int o)
+			{
+				foreach (MenuItem i in offsetItem.MenuItems) i.Checked = i == (MenuItem)s;
+				offset = o;
+				ComputeLightsCount();
+				SaveSettings();
+			}
+			offsetItem.MenuItems.AddRange(new MenuItem[] {
+				new MenuItem("64",(s,e) => { UpdateOffset(s, 64); }){ RadioCheck = true, Tag = 64 },
+				new MenuItem("48",(s,e) => { UpdateOffset(s, 48); }){ RadioCheck = true, Tag = 48 },
+				new MenuItem("44 (TaskBar)",(s,e) => { UpdateOffset(s, 44); }){ RadioCheck = true, Tag = 44 },
+				new MenuItem("32",(s,e) => { UpdateOffset(s, 32); }){ RadioCheck = true, Tag = 32 },
+				new MenuItem("24",(s,e) => { UpdateOffset(s, 24); }){ RadioCheck = true, Tag = 24 },
+				new MenuItem("16",(s,e) => { UpdateOffset(s, 16); }){ RadioCheck = true, Tag = 16 },
+				new MenuItem("0", (s,e) => { UpdateOffset(s, 00); }){ RadioCheck = true, Tag = 00 },
+			});
+			void UpdateDragging(object s)
+			{
+				MenuItem i = (MenuItem)s;
+				i.Checked = !i.Checked;
+				canDrag = i.Checked;
+			}
+			MenuItem autorunItem = new MenuItem("Autorun", (s,e) => {
+				MenuItem i = (MenuItem)s;
+				i.Checked = !i.Checked;
+				EnableAutorun(!IsAutorunEnabled());
+			}) { Checked = IsAutorunEnabled()};
+			/*file*/
+			menu.MenuItems.AddRange(new MenuItem[] {
+				distanceItem,
+				diameterItem,
+				offsetItem,
+				windowStateItem,
+				new MenuItem("-"),
+				new MenuItem("Dragging",(s,e) => UpdateDragging(s)),
+				new MenuItem("Effect Manager", (s,e) => new Thread(() => Application.Run(new EffectManagerDialog())).Start()),
+				new MenuItem("Regenerate Heightmap", (s,e) => ComputeLightsCount()),
+				new MenuItem("-"),
+				autorunItem,
+				new MenuItem("Exit", (sender, e) => { Application.Exit(); }, Shortcut.AltF4),
+				new MenuItem("About", (s,e) => new Thread(() => Application.Run(new AboutBox())).Start(), Shortcut.F1)
+			});
+			//menu.MenuItems.Add(file);
+			ContextMenu = menu;

@@ -1,0 +1,5 @@
+!!!WARNING!!!
+
+Library PlugInSystem.dll MUST be in plugins folder!
+
+All libraries used by plugins MUST be in plugins folder!
