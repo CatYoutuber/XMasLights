@@ -1,9 +1,12 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.29025.244
+# Visual Studio Version 17
+VisualStudioVersion = 17.1.32210.238
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "XMasLights", "XMasLights.csproj", "{5BBF8444-5484-482E-9FA0-0BBD87FCAFDD}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4620C709-212E-467B-80C8-FE842D72D094} = {4620C709-212E-467B-80C8-FE842D72D094}
+	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestEffects", "TestEffects\TestEffects.csproj", "{405C4C53-0172-439C-8DE8-41CE1E265B0B}"
 EndProject

@@ -33,7 +33,7 @@ namespace XMasLights
 		public static bool canDrag = false, dragging = false;
 		public static List<IEffectCollection> plugins = new List<IEffectCollection>();
 		public static List<string> dllNames = new List<string>();
-		public static readonly string path = Environment.CurrentDirectory + "\\plugins";
+		public static readonly string pluginsDir = Environment.CurrentDirectory + "\\plugins";
 		public static IniFile prefs = new IniFile(Environment.CurrentDirectory + "\\preferences.ini");
 		public bool IsAdmin { get { return new WindowsPrincipal(WindowsIdentity.GetCurrent()).IsInRole(WindowsBuiltInRole.Administrator); } }
 		public MainForm()
@@ -44,6 +44,7 @@ namespace XMasLights
 			ComputeLightsCount();
 			LoadTypes();
 			TransparencyKey = BackColor;
+
 			#region Preferences
 			prefs.CreateIfNotExists("distance", "common", "96");
 			prefs.CreateIfNotExists("diameter", "common", "12");
@@ -51,11 +52,11 @@ namespace XMasLights
 			prefs.CreateIfNotExists("libIx", "effect", "0");
 			prefs.CreateIfNotExists("effectIx", "effect", "0");
 
-			distance = int.Parse(prefs.Read("distance","common"));
-			diameter = int.Parse(prefs.Read("diameter","common"));
-			offset = int.Parse(prefs.Read("offset","common"));
-			libIndex = int.Parse(prefs.Read("libIx","effect"));
-			effectIndex = int.Parse(prefs.Read("effectIx","effect"));
+			distance = int.Parse(prefs.Read("distance","common","96"));
+			diameter = int.Parse(prefs.Read("diameter","common","12"));
+			offset = int.Parse(prefs.Read("offset","common","0"));
+			libIndex = int.Parse(prefs.Read("libIx","effect","0"));
+			effectIndex = int.Parse(prefs.Read("effectIx","effect","0"));
             #endregion
 			#region Menu
 			menu = new ContextMenuStrip();
@@ -263,7 +264,7 @@ namespace XMasLights
 		}
 		public void LoadTypes()
 		{
-			DirectoryInfo pluginDir = new DirectoryInfo(path);
+			DirectoryInfo pluginDir = new DirectoryInfo(pluginsDir);
 			if (!pluginDir.Exists) pluginDir.Create();
 			foreach (string file in Directory.GetFiles(pluginDir.FullName, "*.dll"))
 			{
