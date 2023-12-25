@@ -5,6 +5,7 @@ using System.Drawing;
 using System.Threading;
 using System.Reflection;
 using System.Windows.Forms;
+using System.Drawing.Drawing2D;
 using System.Security.Principal;
 using System.Collections.Generic;
 using Microsoft.Win32;
@@ -166,6 +167,7 @@ namespace XMasLights
 			SetStyle(ControlStyles.AllPaintingInWmPaint | ControlStyles.UserPaint, true);
 			SetStyle(ControlStyles.OptimizedDoubleBuffer, true);
 			SetStyle(ControlStyles.ResizeRedraw, true);
+			SetStyle(ControlStyles.SupportsTransparentBackColor, true);
         }
 		private bool IsAutorunEnabled()
         {
@@ -211,18 +213,28 @@ namespace XMasLights
             plugins[libIndex].GetEffects()[effectIndex].FillColors(colors,nLights);
 			for (int i = 0; i < nLights; i++)
 			{
+				int cx = i * distance + distance / 2,
+					cy = heightMap[i] + offset;
 				g.DrawCurve(wirePen, new Point[] {
 					new Point(i * distance, offset),
-					new Point(i * distance + distance / 2, heightMap[i] + offset),
+					new Point(cx, cy),
 					new Point(i * distance + distance, offset)});
-				g.FillEllipse(new SolidBrush(colors[i]),
-					(i * distance + distance / 2) - diameter / 2,
-					heightMap[i] - diameter / 2 + offset,
+				Rectangle lightBounds = new Rectangle(
+					cx - diameter / 2,
+					cy - diameter / 2,
 					diameter, diameter);
-				g.DrawEllipse(lightStrokePen,
-					(i * distance + distance / 2) - diameter / 2,
-					heightMap[i] - diameter / 2 + offset,
-					diameter, diameter);
+				//g.FillEllipse(new SolidBrush(colors[i]), lightBounds);
+				GraphicsPath path = new GraphicsPath();
+				path.AddEllipse(lightBounds);
+				PathGradientBrush brush = new PathGradientBrush(path) { 
+					CenterPoint = new Point(cx, cy),
+					CenterColor = colors[i],
+					SurroundColors = new [] { Color.FromArgb((int)(colors[i].R / 1.75), (int)(colors[i].G / 1.75), (int)(colors[i].B / 1.75))}
+				};
+				g.FillPath(brush, path);
+				path.Dispose();
+				brush.Dispose();
+				g.DrawEllipse(lightStrokePen, lightBounds);
 			}
 			Thread.Sleep(1000 / plugins[libIndex].GetEffects()[effectIndex].GetRequiredFrameRate());
 			Invalidate();
