@@ -63,15 +63,21 @@ namespace XMasLights.PlugInSystem.Default
 		{
 			for (int i = 0; i < nLights; i++)
 			{
-				arr[i] = DefaultColors[i % 4];
+				/*arr[i] = DefaultColors[i % 4];
 				if ((Environment.TickCount / 750) % 2 == 0)
 					arr[i] = i % 2 == 0 ? disabled : arr[i];
 				else
-					arr[i] = i % 2 == 0 ? arr[i] : disabled;
+					arr[i] = i % 2 == 0 ? arr[i] : disabled;*/
+
+				double brightness = (Math.Sin((Environment.TickCount % 2000 / 2000d) * Math.PI * 2) + 1) / 2;
+				double value = i % 2 == 0 ? brightness : 1 - brightness;
+				Color color = DefaultColors[i % 4];
+
+				arr[i] = Color.FromArgb(255, (byte)(color.R * value), (byte)(color.G * value), (byte)(color.B * value));
 			}
 		}
 
-        public string GetDescription() => "Colors enables and disables by pairs";
+        public string GetDescription() => "Colors smoothly enables and disables by pairs";
 
         public string GetName() => "Pairs";
 

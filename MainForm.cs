@@ -199,10 +199,10 @@ namespace XMasLights
 		{
 			base.OnPaint(e);
             #region IndexCheck
-            if (libIndex > plugins.Count - 1) 
+            if (libIndex < 0 || libIndex > plugins.Count - 1) 
 				if(MessageBox.Show("No Plugin with index " + libIndex + " found!\nLoading defaults!","XMasLights",MessageBoxButtons.OK, MessageBoxIcon.Error) == DialogResult.OK)
 					LoadEffectDefaults();
-			if (effectIndex > plugins[libIndex].GetEffects().Length - 1)
+			if (effectIndex < 0 || effectIndex > plugins[libIndex].GetEffects().Length - 1)
 				if (MessageBox.Show(
 					"No Effect with index " + effectIndex + " found in plugin \"" + plugins[libIndex].GetPlugInName() + "\"!\nLoading defaults!",
 					"XMasLights", MessageBoxButtons.OK, MessageBoxIcon.Error) == DialogResult.OK)
@@ -229,7 +229,7 @@ namespace XMasLights
 				PathGradientBrush brush = new PathGradientBrush(path) { 
 					CenterPoint = new Point(cx, cy),
 					CenterColor = colors[i],
-					SurroundColors = new [] { Color.FromArgb((int)(colors[i].R / 1.75), (int)(colors[i].G / 1.75), (int)(colors[i].B / 1.75))}
+					SurroundColors = new [] { Color.FromArgb((int)(colors[i].R / 1.65), (int)(colors[i].G / 1.65), (int)(colors[i].B / 1.65))}
 				};
 				g.FillPath(brush, path);
 				path.Dispose();
