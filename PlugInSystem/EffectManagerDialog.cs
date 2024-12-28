@@ -7,6 +7,7 @@ namespace XMasLights.PlugInSystem
 	public partial class EffectManagerDialog : Form
 	{
 		public int libIx = 0, effIx = 0, prevLib = 0, prevEff = 0;
+		bool sc = false;
 		public EffectManagerDialog()
 		{
 			InitializeComponent();
@@ -33,6 +34,7 @@ namespace XMasLights.PlugInSystem
 				MainForm.effectIndex = effIx;
 				MainForm.prefs.Write("libIx", libIx.ToString(), "effect");
 				MainForm.prefs.Write("effectIx", effIx.ToString(), "effect");
+				sc = true;
 				Close();
 			}
 			else effectsTree.SelectedNode.Expand();
@@ -43,17 +45,20 @@ namespace XMasLights.PlugInSystem
 			Process.Start(Environment.CurrentDirectory + "\\plugins");
         }
 
-        private void CancelBtn_Click(object sender, EventArgs e)
-        {
+		private void CancelBtn_Click(object sender, EventArgs e)
+		{
 			MainForm.libIndex = prevLib;
 			MainForm.effectIndex = prevEff;
-            Close();
+			Close();
         }
 
         private void EffectManagerDialog_FormClosing(object sender, FormClosingEventArgs e)
         {
-			MainForm.libIndex = prevLib;
-			MainForm.effectIndex = prevEff;
+			if (!sc)
+			{
+				MainForm.libIndex = prevLib;
+				MainForm.effectIndex = prevEff;
+			}
         }
 
         private void getnewLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
