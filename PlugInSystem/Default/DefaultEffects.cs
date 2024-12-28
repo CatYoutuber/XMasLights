@@ -13,6 +13,8 @@ namespace XMasLights.PlugInSystem.Default
 
         public string GetPlugInName() => "Default Effects";
 		public string GetPlugInDescription() => "Builtin Effects collection by CatYoutuber";
+		public bool HasWebsite() => false;
+		public string GetPlugInWebsite() => "";
         public static Color HsvToRgb(double h, double s, double v)
 		{
 			int hi = (int)Math.Floor(h / 60.0) % 6;

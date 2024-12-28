@@ -50,6 +50,12 @@ namespace XMasLights.PlugInSystem
             Close();
         }
 
+        private void EffectManagerDialog_FormClosing(object sender, FormClosingEventArgs e)
+        {
+			MainForm.libIndex = prevLib;
+			MainForm.effectIndex = prevEff;
+        }
+
         private void getnewLink_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             if (e.Link.Visited)
@@ -63,23 +69,40 @@ namespace XMasLights.PlugInSystem
 			//e.Link.Visited = true;
 			//Process.Start("https://catyoutuber.github.io/projects/xmaslights/plugins");
         }
-
+		private void PluginWebsiteLinkClicked(object sender, LinkLabelLinkClickedEventArgs args)
+        {
+			string url = MainForm.plugins[libIx].GetPlugInWebsite();
+			Process.Start(url);
+        }
         private void EffectsTree_AfterSelect(object sender, TreeViewEventArgs e)
 		{
 			bool isEffect = (bool)effectsTree.SelectedNode.Tag;
 			TreeNode sn = effectsTree.SelectedNode;
 			IEffectCollection collection = MainForm.plugins[isEffect ? sn.Parent.Index : sn.Index];
-			infoLabel.Text = string.Format("Name: {0}\r\n\nLib: {1}\r\n\nDescription: {2}" + (isEffect ? "\r\n\nFrameRate : {3}" : ""),
+			infoLabel.Text = string.Format("Name: {0}\r\n\nLib: {1}\r\n\nDescription: {2}" + 
+					(isEffect ? "\r\n\nFrameRate : {3}" : 
+						(collection.HasWebsite() ? "\r\n\nWebsite: {3}" : "")),
 				isEffect ? collection.GetEffects()[sn.Index].GetName() : collection.GetPlugInName(),
 				MainForm.GetFileName(MainForm.dllNames[isEffect ? sn.Parent.Index : sn.Index]),
 				isEffect ? collection.GetEffects()[sn.Index].GetDescription() : collection.GetPlugInDescription(),
-				isEffect ? collection.GetEffects()[sn.Index].GetRequiredFrameRate() : 0);
+				isEffect ? collection.GetEffects()[sn.Index].GetRequiredFrameRate().ToString() : (collection.HasWebsite() ? collection.GetPlugInWebsite() : ""));
 			okBtn.Enabled = isEffect;
+			if (!isEffect && collection.HasWebsite())
+			{
+				infoLabel.LinkArea = new LinkArea(infoLabel.Text.Length - collection.GetPlugInWebsite().Length, collection.GetPlugInWebsite().Length);
+				infoLabel.LinkClicked += PluginWebsiteLinkClicked;
+			}
+			else
+			{
+				infoLabel.LinkArea = new LinkArea(0, 0);
+				infoLabel.LinkClicked -= PluginWebsiteLinkClicked;
+			}
 			if(isEffect)
 			{
 				MainForm.libIndex = libIx = sn.Parent.Index;
 				MainForm.effectIndex = effIx = sn.Index;
 			}
+			else libIx = sn.Index;
 		}
 	}
 }

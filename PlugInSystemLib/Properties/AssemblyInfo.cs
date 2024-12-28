@@ -10,7 +10,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("CatYoutuber TV")]
 [assembly: AssemblyProduct("XMasLights")]
-[assembly: AssemblyCopyright("©CatYoutuber 2018-2021")]
+[assembly: AssemblyCopyright("©CatYoutuber 2018-2024")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

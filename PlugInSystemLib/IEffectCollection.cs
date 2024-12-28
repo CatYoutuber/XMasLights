@@ -5,5 +5,7 @@
 		ILightsEffect[] GetEffects();
 		string GetPlugInName();
 		string GetPlugInDescription();
+		bool HasWebsite();
+		string GetPlugInWebsite();
 	}
 }
